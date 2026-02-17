@@ -8,14 +8,12 @@ export default {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+      screens: { "2xl": "1400px" },
     },
     extend: {
       fontFamily: {
-        sans: ["DM Sans", "sans-serif"],
-        display: ["Playfair Display", "serif"],
+        sans: ["Inter", "sans-serif"],
+        display: ["Space Grotesk", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -61,9 +59,26 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        success: "hsl(var(--success))",
-        warning: "hsl(var(--warning))",
-        buzzer: "hsl(var(--buzzer))",
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          soft: "hsl(var(--success-soft))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          soft: "hsl(var(--warning-soft))",
+        },
+        buzzer: {
+          DEFAULT: "hsl(var(--buzzer))",
+          soft: "hsl(var(--buzzer-soft))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          soft: "hsl(var(--info-soft))",
+        },
+        grape: {
+          DEFAULT: "hsl(var(--grape))",
+          soft: "hsl(var(--grape-soft))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -84,12 +99,16 @@ export default {
           "50%": { transform: "scale(1.05)", boxShadow: "0 0 0 15px hsl(var(--buzzer) / 0)" },
         },
         "fade-in": {
-          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "0%": { opacity: "0", transform: "translateY(12px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         "scale-in": {
           "0%": { transform: "scale(0.95)", opacity: "0" },
           "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        "slide-up": {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
       animation: {
@@ -97,7 +116,8 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         "pulse-buzzer": "pulse-buzzer 2s ease-in-out infinite",
         "fade-in": "fade-in 0.5s ease-out forwards",
-        "scale-in": "scale-in 0.2s ease-out forwards",
+        "scale-in": "scale-in 0.25s ease-out forwards",
+        "slide-up": "slide-up 0.6s ease-out forwards",
       },
     },
   },
