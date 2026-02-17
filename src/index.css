@@ -48,6 +48,9 @@
     --success: 145 60% 40%;
     --warning: 36 90% 50%;
     --buzzer: 0 85% 55%;
+
+    --glass: 0 0% 100% / 0.7;
+    --glass-border: 0 0% 100% / 0.3;
   }
 
   .dark {
@@ -81,6 +84,8 @@
     --success: 145 60% 40%;
     --warning: 36 90% 50%;
     --buzzer: 0 85% 55%;
+    --glass: 150 18% 12% / 0.7;
+    --glass-border: 150 18% 20% / 0.3;
   }
 }
 
@@ -95,5 +100,35 @@
 
   h1, h2, h3 {
     font-family: 'Playfair Display', serif;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-card/70 backdrop-blur-xl border border-border/50 shadow-sm;
+  }
+
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+
+  .status-dot {
+    @apply h-2.5 w-2.5 rounded-full;
+  }
+
+  .status-available {
+    @apply bg-success animate-pulse;
+  }
+
+  .status-claimed {
+    @apply bg-warning;
+  }
+
+  .status-picked {
+    @apply bg-muted-foreground;
   }
 }
