@@ -2,15 +2,16 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Leaf, Bell, Plus, LogOut, Package, Users, TrendingUp, Utensils,
+  Bell, Plus, Package, Users, TrendingUp, Utensils,
   Search, Heart, Timer, Zap,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import MealCard, { type Meal, type MealStatus } from "@/components/MealCard";
 import AddMealForm from "@/components/AddMealForm";
 import ActivityFeed from "@/components/ActivityFeed";
 import ImpactBanner from "@/components/ImpactBanner";
 import TopOrganizations from "@/components/TopOrganizations";
+import MealRecorder from "@/components/MealRecorder";
+import Layout from "@/components/Layout";
 
 const initialMeals: Meal[] = [
   { id: 1, name: "Vegetable Biryani", org: "Green Valley Restaurant", type: "Cooked Meals", qty: "25 plates", distance: "1.2 km", time: "30 min ago", status: "available", emoji: "🍛" },
@@ -40,7 +41,6 @@ const Dashboard = () => {
   const [search, setSearch] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
   const [buzzerActive, setBuzzerActive] = useState(false);
-  const navigate = useNavigate();
 
   const handleClaim = (id: number) => {
     setMeals((prev) => prev.map((m) => (m.id === id ? { ...m, status: "claimed" as MealStatus } : m)));
@@ -57,17 +57,17 @@ const Dashboard = () => {
       "Dairy": "🧀", "Rice & Grains": "🍚", "Other": "🍽️",
     };
     const newMeal: Meal = {
-      id: Date.now(),
-      name: meal.name,
-      org: "Your Organization",
-      type: meal.type,
-      qty: meal.qty,
-      distance: "0 km",
-      time: "Just now",
-      status: "available",
-      description: meal.description,
-      expiry: meal.expiry,
-      emoji: emojiMap[meal.type] || "🍽️",
+      id: Date.now(), name: meal.name, org: "Your Organization", type: meal.type,
+      qty: meal.qty, distance: "0 km", time: "Just now", status: "available",
+      description: meal.description, expiry: meal.expiry, emoji: emojiMap[meal.type] || "🍽️",
+    };
+    setMeals((prev) => [newMeal, ...prev]);
+  };
+
+  const handleQuickAdd = (text: string) => {
+    const newMeal: Meal = {
+      id: Date.now(), name: text, org: "Quick Log", type: "Other",
+      qty: "—", distance: "0 km", time: "Just now", status: "available", emoji: "📝",
     };
     setMeals((prev) => [newMeal, ...prev]);
   };
@@ -91,15 +91,18 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Nav */}
-      <header className="glass-card sticky top-0 z-50 border-b border-border/60 rounded-none">
-        <div className="container mx-auto flex items-center justify-between h-16 px-4 max-w-7xl">
-          <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center">
-              <Leaf className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="text-lg font-display font-bold text-foreground">FoodRescue</span>
+    <Layout>
+      <div className="container mx-auto px-4 py-8 max-w-7xl space-y-8">
+        {/* Hero greeting */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 animate-fade-in">
+          <div>
+            <p className="text-sm font-semibold text-primary mb-1">Dashboard</p>
+            <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground">
+              Good morning! 🌿
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              {meals.filter((d) => d.status === "available").length} meals waiting to be rescued nearby
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -113,28 +116,10 @@ const Dashboard = () => {
               <Bell className="h-4 w-4" />
               {buzzerActive ? "Sent! 🔔" : "Send Buzzer"}
             </button>
-            <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => navigate("/")}>
-              <LogOut className="h-5 w-5" />
+            <Button onClick={() => setShowAddForm(true)} className="rounded-xl gap-2 h-11 px-6 font-bold text-sm">
+              <Plus className="h-4 w-4" /> Add New Meal
             </Button>
           </div>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-8 max-w-7xl space-y-8">
-        {/* Hero greeting */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 animate-fade-in">
-          <div>
-            <p className="text-sm font-semibold text-primary mb-1">Dashboard</p>
-            <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground">
-              Good morning! 🌿
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              {meals.filter((d) => d.status === "available").length} meals waiting to be rescued nearby
-            </p>
-          </div>
-          <Button onClick={() => setShowAddForm(true)} className="rounded-xl gap-2 h-11 px-6 font-bold text-sm">
-            <Plus className="h-4 w-4" /> Add New Meal
-          </Button>
         </div>
 
         {/* Impact Banner */}
@@ -143,11 +128,7 @@ const Dashboard = () => {
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {quickStats.map((stat, i) => (
-            <div
-              key={stat.label}
-              className="glass-card p-4 hover-lift animate-fade-in"
-              style={{ animationDelay: `${i * 60}ms` }}
-            >
+            <div key={stat.label} className="glass-card p-4 hover-lift animate-fade-in" style={{ animationDelay: `${i * 60}ms` }}>
               <div className="flex items-center gap-3">
                 <div className={`h-10 w-10 rounded-xl ${stat.bg} flex items-center justify-center`}>
                   <stat.icon className={`h-5 w-5 ${stat.color}`} />
@@ -185,12 +166,7 @@ const Dashboard = () => {
               </div>
               <div className="relative w-full sm:w-52">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="pl-9 rounded-xl"
-                />
+                <Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 rounded-xl" />
               </div>
             </div>
 
@@ -212,14 +188,15 @@ const Dashboard = () => {
 
           {/* Sidebar - 1 col */}
           <div className="space-y-5">
+            <MealRecorder onQuickAdd={handleQuickAdd} />
             <ActivityFeed />
             <TopOrganizations />
           </div>
         </div>
-      </main>
+      </div>
 
       {showAddForm && <AddMealForm onAdd={handleAddMeal} onClose={() => setShowAddForm(false)} />}
-    </div>
+    </Layout>
   );
 };
 
